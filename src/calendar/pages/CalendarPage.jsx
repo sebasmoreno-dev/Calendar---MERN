@@ -1,84 +1,71 @@
-import { Calendar } from 'react-big-calendar';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { Calendar } from "react-big-calendar";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
-import { addHours } from 'date-fns';
-import { Navbar, CalendarEvent, CalendarModal } from '../'
+import { Navbar, CalendarEvent, CalendarModal } from "../";
 
-import { localizer, getMessagesES } from '../../helpers';
-import { useState } from 'react';
-import { useUiStore } from '../../hooks';
-
-
-const events = [{
-  title: 'Cumpleaños del Jefe',
-  note: 'Hay que comprar el pastel',
-  start: new Date(),
-  end: addHours( new Date(), 2),
-  bgColor: '#fafafa',
-  user: {
-    _id: '123',
-    name: 'Sebas'
-  }
-}]
+import { localizer, getMessagesES } from "../../helpers";
+import { useState } from "react";
+import { useUiStore, useCalendarStore } from "../../hooks";
 
 export const CalendarPage = () => {
 
   const { openDateModal } = useUiStore();
+  const { events } = useCalendarStore();
 
-  const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'week');
+  const [lastView, setLastView] = useState(
+    localStorage.getItem("lastView") || "week"
+  );
 
-  const eventStyleGetter = ( event, start, end, isSelected ) => {
-
+  const eventStyleGetter = (event, start, end, isSelected) => {
     const style = {
-      backgroundColor: '#347CF7',
-      borderRadius: '0px',
+      backgroundColor: "#347CF7",
+      borderRadius: "0px",
       opacity: 0.8,
-      color: 'white'
-    }
+      color: "white",
+    };
 
     return {
-      style
-    }
-  }
+      style,
+    };
+  };
 
-
-  const onDoubleClick = ( event ) => {
+  const onDoubleClick = (event) => {
     openDateModal();
-  }
+  };
 
-  const onSelect = ( event ) => {
+  const onSelect = (event) => {
     console.log({ click: event });
-  }
+  };
 
-  const onViewChanged = ( event ) => {
-    localStorage.setItem('lastView', event);
-    setLastView( event )
-  }
+  const onViewChanged = (event) => {
+    localStorage.setItem("lastView", event);
+    setLastView(event);
+  };
 
   return (
     <>
       <Navbar />
 
       <Calendar
-        culture='es'
-        className='px-3'
-        localizer={ localizer }
-        events={ events }
+        culture="es"
+        className="px-3"
+        localizer={localizer}
+        events={events}
         defaultView={lastView}
         startAccessor="start"
         endAccessor="end"
-        style={{height: 'calc( 100vh - 80px)'}}
-        messages={ getMessagesES() }
-        eventPropGetter={ eventStyleGetter }
+        style={{ height: "calc( 100vh - 80px)" }}
+        messages={getMessagesES()}
+        eventPropGetter={eventStyleGetter}
         components={{
-          event: CalendarEvent
+          event: CalendarEvent,
         }}
-        onDoubleClickEvent={ onDoubleClick }
-        onSelectEvent={ onSelect }
-        onView={ onViewChanged }
+        onDoubleClickEvent={onDoubleClick}
+        onSelectEvent={onSelect}
+        onView={onViewChanged}
       />
 
       <CalendarModal />
     </>
-  )
-}
+  );
+};
