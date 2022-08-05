@@ -43,7 +43,18 @@
     border-radius: 100%;
     bottom: 25px;
     font-size: 20px;
-    padding: 25px;
+    width: 70px;
+    height: 70px;
     position: fixed;
     right: 25px;
+}
+
+.fab-danger {
+    border-radius: 100%;
+    bottom: 25px;
+    font-size: 20px;
+    width: 70px;
+    height: 70px;
+    position: fixed;
+    left: 25px;
 }

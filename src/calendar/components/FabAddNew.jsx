@@ -1,5 +1,4 @@
 import { addHours } from 'date-fns';
-import React from 'react'
 import { useCalendarStore, useUiStore } from '../../hooks'
 
 export const FabAddNew = () => {
@@ -22,7 +21,6 @@ export const FabAddNew = () => {
 
     openDateModal();
   }
-
 
   return (
     <>
