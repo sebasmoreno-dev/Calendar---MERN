@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import Swal from 'sweetalert2';
 import { useAuthStore, useForm } from '../../hooks';
 import './LoginPage.css';
 
@@ -16,7 +18,7 @@ const registerFormFields = {
 
 export const LoginPage = () => {
 
-  const { startLogin } = useAuthStore();
+  const { startLogin, errorMessage } = useAuthStore();
 
   const { loginEmail, loginPassword, onInputChange: onLoginInputChange } = useForm( loginFormFields );
   const { registerName, registerEmail, registerPassword, registerPassword2 , onInputChange: onRegisterInputChange } = useForm( registerFormFields );
@@ -31,6 +33,14 @@ export const LoginPage = () => {
     event.preventDefault();
     console.log({ registerName, registerEmail, registerPassword, registerPassword2 });
   }
+
+  //*Para estar pendiente de los cambios de errorMesage debemos utilizar un useEffect - Para mostrar las alertas usamos sweetAlert
+  useEffect(() => {
+    if ( errorMessage !== undefined ) {
+      Swal.fire('Error en la autenticación', errorMessage, 'error');
+    }
+  }, [errorMessage])
+  
 
   return (
     <div className="container login-container">
