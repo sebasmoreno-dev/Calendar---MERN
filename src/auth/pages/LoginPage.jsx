@@ -44,10 +44,10 @@ export const LoginPage = () => {
       return;
     }
     startRegister({
-        name: registerName,
-        email: registerEmail,
-        password: registerPassword,
-      });
+      name: registerName,
+      email: registerEmail,
+      password: registerPassword,
+    });
   };
 
   //*Para estar pendiente de los cambios de errorMesage debemos utilizar un useEffect - Para mostrar las alertas usamos sweetAlert
