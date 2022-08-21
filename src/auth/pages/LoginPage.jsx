@@ -1,61 +1,76 @@
-import { useEffect } from 'react';
-import Swal from 'sweetalert2';
-import { useAuthStore, useForm } from '../../hooks';
-import './LoginPage.css';
+import { useEffect } from "react";
+import Swal from "sweetalert2";
+import { useAuthStore, useForm } from "../../hooks";
+import "./LoginPage.css";
 
 const loginFormFields = {
-  loginEmail: '',
-  loginPassword: '',
-}
+  loginEmail: "",
+  loginPassword: "",
+};
 
 const registerFormFields = {
-  registerName: '',
-  registerEmail: '',
-  registerPassword: '',
-  registerPassword2: '',
-}
-
+  registerName: "",
+  registerEmail: "",
+  registerPassword: "",
+  registerPassword2: "",
+};
 
 export const LoginPage = () => {
+  const { startLogin, startRegister, errorMessage } = useAuthStore();
 
-  const { startLogin, errorMessage } = useAuthStore();
+  const {
+    loginEmail,
+    loginPassword,
+    onInputChange: onLoginInputChange,
+  } = useForm(loginFormFields);
 
-  const { loginEmail, loginPassword, onInputChange: onLoginInputChange } = useForm( loginFormFields );
-  const { registerName, registerEmail, registerPassword, registerPassword2 , onInputChange: onRegisterInputChange } = useForm( registerFormFields );
+  const {
+    registerName,
+    registerEmail,
+    registerPassword,
+    registerPassword2,
+    onInputChange: onRegisterInputChange,
+  } = useForm(registerFormFields);
 
-  const loginSubmit = ( event ) => {
+  const loginSubmit = (event) => {
     event.preventDefault();
-    startLogin({ email:loginEmail, password:loginPassword})
-    
-  }
+    startLogin({ email: loginEmail, password: loginPassword });
+  };
 
-  const registerSubmit = ( event ) => {
+  const registerSubmit = (event) => {
     event.preventDefault();
-    console.log({ registerName, registerEmail, registerPassword, registerPassword2 });
-  }
+    if (registerPassword !== registerPassword2) {
+      Swal.fire("Error en registro", "Las contraseñas no coinciden", "error");
+      return;
+    }
+    startRegister({
+        name: registerName,
+        email: registerEmail,
+        password: registerPassword,
+      });
+  };
 
   //*Para estar pendiente de los cambios de errorMesage debemos utilizar un useEffect - Para mostrar las alertas usamos sweetAlert
   useEffect(() => {
-    if ( errorMessage !== undefined ) {
-      Swal.fire('Error en la autenticación', errorMessage, 'error');
+    if (errorMessage !== undefined) {
+      Swal.fire("Error en la autenticación", errorMessage, "error");
     }
-  }, [errorMessage])
-  
+  }, [errorMessage]);
 
   return (
     <div className="container login-container">
       <div className="row">
         <div className="col-md-6 login-form-1">
           <h3>Ingreso</h3>
-          <form onSubmit={ loginSubmit }>
+          <form onSubmit={loginSubmit}>
             <div className="form-group mb-2">
               <input
                 type="text"
                 className="form-control"
                 placeholder="Correo"
                 name="loginEmail"
-                value={ loginEmail }
-                onChange={ onLoginInputChange }
+                value={loginEmail}
+                onChange={onLoginInputChange}
               />
             </div>
             <div className="form-group mb-2">
@@ -64,8 +79,8 @@ export const LoginPage = () => {
                 className="form-control"
                 placeholder="Contraseña"
                 name="loginPassword"
-                value={ loginPassword }
-                onChange={ onLoginInputChange }
+                value={loginPassword}
+                onChange={onLoginInputChange}
               />
             </div>
             <div className="d-grid gap-2">
@@ -76,15 +91,15 @@ export const LoginPage = () => {
 
         <div className="col-md-6 login-form-2">
           <h3>Registro</h3>
-          <form onSubmit={ registerSubmit }>
+          <form onSubmit={registerSubmit}>
             <div className="form-group mb-2">
               <input
                 type="text"
                 className="form-control"
                 placeholder="Nombre"
                 name="registerName"
-                value={ registerName }
-                onChange={ onRegisterInputChange }
+                value={registerName}
+                onChange={onRegisterInputChange}
               />
             </div>
             <div className="form-group mb-2">
@@ -93,8 +108,8 @@ export const LoginPage = () => {
                 className="form-control"
                 placeholder="Correo"
                 name="registerEmail"
-                value={ registerEmail }
-                onChange={ onRegisterInputChange }
+                value={registerEmail}
+                onChange={onRegisterInputChange}
               />
             </div>
             <div className="form-group mb-2">
@@ -103,8 +118,8 @@ export const LoginPage = () => {
                 className="form-control"
                 placeholder="Contraseña"
                 name="registerPassword"
-                value={ registerPassword }
-                onChange={ onRegisterInputChange }
+                value={registerPassword}
+                onChange={onRegisterInputChange}
               />
             </div>
 
@@ -114,8 +129,8 @@ export const LoginPage = () => {
                 className="form-control"
                 placeholder="Repita la contraseña"
                 name="registerPassword2"
-                value={ registerPassword2 }
-                onChange={ onRegisterInputChange }
+                value={registerPassword2}
+                onChange={onRegisterInputChange}
               />
             </div>
 
