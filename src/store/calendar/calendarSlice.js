@@ -5,7 +5,7 @@ export const calendarSlice = createSlice({
     initialState: {
         isLoadingEvents: true,
         events: [
-          
+
         ],
         activeEvent: null
     },
