@@ -50,4 +50,25 @@ describe('Pruebas en useUiStore', () => {
 
     console.log({ result: result.current, isDateModalOpen})
   });
+
+  test('toggleDateModal debe de cambiar el estado respectivamente', () => {
+
+    const mockStore = getMockStore({ isDateModalOpen: true });
+    const { result } = renderHook( () => useUiStore(), {
+      wrapper: ({ children }) => <Provider store={ mockStore }> { children } </Provider>
+    });
+
+    act(() => {
+      result.current.toggleDateModal();
+    });
+
+    expect( result.current.isDateModalOpen).toBeFalsy();
+
+    act(() => {
+      result.current.toggleDateModal();
+    });
+
+    expect( result.current.isDateModalOpen).toBeTruthy();
+  });
+
 })
