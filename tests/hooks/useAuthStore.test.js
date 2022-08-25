@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { authSlice } from "../../src/store";
 import { Provider } from "react-redux";
-import { renderHook, act, waitForElementToBeRemoved, waitFor } from "@testing-library/react";
+import { renderHook, act, waitFor } from "@testing-library/react";
 import { useAuthStore } from "../../src/hooks/useAuthStore";
 import { authenticatedState, initialState, notAuthenticatedState } from "./../fixtures/authStates";
 import { testUserCredentials } from "../fixtures/testUser";
@@ -144,6 +144,54 @@ describe('Pruebas en useAuthStore', () => {
     });
 
   });
+
+  test('checkAuthToken debe de fallar si no hay token', async() => {
+
+    const mockStore = getMockStore( {...initialState })
+    const { result } = renderHook( () => useAuthStore(), {
+      wrapper: ({ children }) => <Provider store={ mockStore }> { children }</Provider>
+    });
+
+    await act(async() => {
+      await result.current.startRegister(testUserCredentials);
+    });
+
+    const { errorMessage, status, user } = result.current;
+
+    expect({ errorMessage, status, user}).toEqual({
+      errorMessage: "--",
+      status: "not-authenticated",
+      user: {},
+    });
+
+  });
+
+  test('checkAuthToken debe de autenticar el usuario si hay un token', async() => {
+
+    const { data } = await calendarApi.post('/auth', testUserCredentials);
+    localStorage.setItem('token', data.token );
+
+    const mockStore = getMockStore( {...initialState })
+    const { result } = renderHook( () => useAuthStore(), {
+      wrapper: ({ children }) => <Provider store={ mockStore }> { children }</Provider>
+    });
+
+    await act(async() => {
+      await result.current.checkAuthToken();
+    });
+
+    const { errorMessage, status, user } = result.current;
+
+    expect({ errorMessage, status, user}).toEqual({
+      errorMessage: undefined,
+      status: "authenticated",
+      user: {
+        name: "Test User",
+        uid: "6303a717703f0eaa9db6e113",
+      }
+    });
+
+  })
 
 
 })
