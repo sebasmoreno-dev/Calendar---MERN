@@ -5,6 +5,7 @@ import { renderHook, act, waitForElementToBeRemoved, waitFor } from "@testing-li
 import { useAuthStore } from "../../src/hooks/useAuthStore";
 import { authenticatedState, initialState, notAuthenticatedState } from "./../fixtures/authStates";
 import { testUserCredentials } from "../fixtures/testUser";
+import { calendarApi } from "../../src/api";
 
 
 const getMockStore = ( initialState ) => {
@@ -20,6 +21,7 @@ const getMockStore = ( initialState ) => {
 
 describe('Pruebas en useAuthStore', () => {
 
+  beforeEach(() =>localStorage.clear());
 
   test('debe de regresar los valores por defecto', () => {
 
@@ -85,6 +87,40 @@ describe('Pruebas en useAuthStore', () => {
     await waitFor(
       () => expect( result.current.errorMessage).toBe(undefined)
     );
+
+  })
+
+  test('startRegister debe de crear un usuario', async() => {
+
+    const newUser = { email: 'mal@gmail.com', password: '123456', name: 'Test user2' }
+
+    const mockStore = getMockStore( {...notAuthenticatedState })
+    const { result } = renderHook( () => useAuthStore(), {
+      wrapper: ({ children }) => <Provider store={ mockStore }> { children }</Provider>
+    });
+
+    const spy = jest.spyOn(calendarApi, 'post').mockReturnValue({
+      data: {
+        ok: true,
+        uid: "1215451515152",
+        name: "Test User",
+        token: "ALGUN-TOKEN"
+      }
+    });
+
+    await act(async() => {
+      await result.current.startRegister(newUser);
+    });
+
+    const { errorMessage, status, user } = result.current;
+
+    expect({ errorMessage, status, user}).toEqual({
+      errorMessage: undefined,
+      status: 'authenticated',
+      user: { name: 'Test User', uid: '1215451515152' }
+    });
+
+    spy.mockRestore();
 
   })
 })
